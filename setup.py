@@ -12,7 +12,7 @@ setup(
     author='Pascal Vizeli',
     author_email='pvizeli@syshack.ch',
     url='https://github.com/pvizeli/tellcore-net',
-    download_url='https://github.com/pvizeli/yahooweather/tarball/'+VERSION,
+    download_url='https://github.com/pvizeli/tellcore-net/tarball/'+VERSION,
     description=('a Python module that allow to run tellcore over TCP/IP'),
     long_description=long_description,
     classifiers=[
