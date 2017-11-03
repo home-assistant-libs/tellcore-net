@@ -6,3 +6,8 @@ System requirements
 ------------------
 
 local installed socat.
+
+Install
+--------
+
+`pip install tellcore-net`
