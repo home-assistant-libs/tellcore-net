@@ -5,8 +5,10 @@ more details from https://github.com/pvizeli/tellcore-net
 import shlex
 import subprocess
 
-SOCAT_SERVER = "socat TCP-LISTEN:{port},reuseaddr,fork UNIX-CONNECT:/tmp/TelldusClient"
-SOCAT_CLIENT = "socat TCP:{host}:{port} UNIX-LISTEN:/tmp/TelldusClient"
+SOCAT_SERVER = \
+    "socat TCP-LISTEN:{port},reuseaddr,fork UNIX-CONNECT:/tmp/TelldusClient"
+SOCAT_CLIENT = \
+    "socat TCP:{host}:{port} UNIX-LISTEN:/tmp/TelldusClient"
 
 
 class TellCoreClient(object):
