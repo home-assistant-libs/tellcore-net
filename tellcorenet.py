@@ -59,7 +59,7 @@ class TellCoreServer(object):
 
     def start(self):
         """Start server."""
-         self.proc = []
+        self.proc = []
         for telldus, port in (
                               (TELLDUS_CLIENT, self.port_client),
                               (TELLDUS_EVENTS, self.port_events)
