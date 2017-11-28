@@ -28,9 +28,8 @@ class TellCoreClient(object):
         """Start client."""
         self.proc = []
         for telldus, port in (
-                              (TELLDUS_CLIENT, self.port_client),
-                              (TELLDUS_EVENTS, self.port_events)
-                             ):
+                (TELLDUS_CLIENT, self.port_client),
+                (TELLDUS_EVENTS, self.port_events)):
             args = shlex.split(SOCAT_CLIENT.format(
                 type=telldus, host=self.host, port=port))
             self.proc.append(subprocess.Popen(
@@ -61,9 +60,8 @@ class TellCoreServer(object):
         """Start server."""
         self.proc = []
         for telldus, port in (
-                              (TELLDUS_CLIENT, self.port_client),
-                              (TELLDUS_EVENTS, self.port_events)
-                             ):
+                (TELLDUS_CLIENT, self.port_client),
+                (TELLDUS_EVENTS, self.port_events)):
             args = shlex.split(SOCAT_CLIENT.format(
                 type=telldus, port=port))
             self.proc.append(subprocess.Popen(
