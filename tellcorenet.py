@@ -6,57 +6,74 @@ import shlex
 import subprocess
 
 SOCAT_SERVER = \
-    "socat TCP-LISTEN:{port},reuseaddr,fork UNIX-CONNECT:/tmp/TelldusClient"
+    "socat TCP-LISTEN:{port},reuseaddr,fork UNIX-CONNECT:/tmp/{type}"
 SOCAT_CLIENT = \
-    "socat TCP:{host}:{port} UNIX-LISTEN:/tmp/TelldusClient"
+    "socat TCP:{host}:{port} UNIX-LISTEN:/tmp/{type}"
+
+TELLDUS_CLIENT = 'TelldusClient'
+TELLDUS_EVENTS = 'TelldusEvents'
 
 
 class TellCoreClient(object):
     """Client for tellcore."""
 
-    def __init__(self, host, port):
+    def __init__(self, host, port_client, port_events):
         """Initialize TellCore client."""
         self.proc = None
         self.host = host
-        self.port = port
+        self.port_client = port_client
+        self.port_events = port_events
 
     def start(self):
         """Start client."""
-        args = shlex.split(SOCAT_CLIENT.format(host=self.host, port=self.port))
-        self.proc = subprocess.Popen(
-            args,
-            stdin=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL
-        )
+        self.proc = []
+        for telldus, port in (
+                (TELLDUS_CLIENT, self.port_client),
+                (TELLDUS_EVENTS, self.port_events)):
+            args = shlex.split(SOCAT_CLIENT.format(
+                type=telldus, host=self.host, port=port))
+            self.proc.append(subprocess.Popen(
+                args,
+                stdin=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL
+            ))
 
     def stop(self):
         """Stop client."""
         if self.proc:
-            self.proc.kill()
+            for proc in self.proc:
+                proc.kill()
         self.proc = None
 
 
 class TellCoreServer(object):
     """Server for tellcore."""
 
-    def __init__(self, port):
+    def __init__(self, port_client, port_events):
         """Initialize TellCore server."""
         self.proc = None
-        self.port = port
+        self.port_client = port_client
+        self.port_events = port_events
 
     def start(self):
         """Start server."""
-        args = shlex.split(SOCAT_SERVER.format(port=self.port))
-        self.proc = subprocess.Popen(
-            args,
-            stdin=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL
-        )
+        self.proc = []
+        for telldus, port in (
+                (TELLDUS_CLIENT, self.port_client),
+                (TELLDUS_EVENTS, self.port_events)):
+            args = shlex.split(SOCAT_CLIENT.format(
+                type=telldus, port=port))
+            self.proc.append(subprocess.Popen(
+                args,
+                stdin=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL
+            ))
 
     def stop(self):
         """Stop server."""
         if self.proc:
-            self.proc.kill()
+            for proc in self.proc:
+                proc.kill()
         self.proc = None
