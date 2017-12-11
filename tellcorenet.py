@@ -2,6 +2,7 @@
 
 more details from https://github.com/pvizeli/tellcore-net
 """
+from pathlib import Path
 import shlex
 import subprocess
 
@@ -26,24 +27,26 @@ class TellCoreClient(object):
 
     def start(self):
         """Start client."""
-        self.proc = []
+        self.proc = {}
         for telldus, port in (
                 (TELLDUS_CLIENT, self.port_client),
                 (TELLDUS_EVENTS, self.port_events)):
             args = shlex.split(SOCAT_CLIENT.format(
                 type=telldus, host=self.host, port=port))
-            self.proc.append(subprocess.Popen(
+            self.proc[telldus] = subprocess.Popen(
                 args,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL
-            ))
+            )
 
     def stop(self):
         """Stop client."""
         if self.proc:
-            for proc in self.proc:
+            for telldus, proc in self.proc.items():
                 proc.kill()
+                proc.wait()
+                Path("/tmp", telldus).unlink()
         self.proc = None
 
 
@@ -58,22 +61,22 @@ class TellCoreServer(object):
 
     def start(self):
         """Start server."""
-        self.proc = []
+        self.proc = {}
         for telldus, port in (
                 (TELLDUS_CLIENT, self.port_client),
                 (TELLDUS_EVENTS, self.port_events)):
             args = shlex.split(SOCAT_SERVER.format(
                 type=telldus, port=port))
-            self.proc.append(subprocess.Popen(
+            self.proc[telldus] = subprocess.Popen(
                 args,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL
-            ))
+            )
 
     def stop(self):
         """Stop server."""
         if self.proc:
-            for proc in self.proc:
+            for proc in self.proc.values():
                 proc.kill()
         self.proc = None
