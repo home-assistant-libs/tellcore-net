@@ -45,7 +45,8 @@ class TellCoreClient(object):
         if self.proc:
             for telldus, proc in self.proc.items():
                 proc.kill()
-                Path("/tmp", telldus).remove()
+                proc.wait()
+                Path("/tmp", telldus).unlink()
         self.proc = None
 
 
