@@ -8,7 +8,7 @@ import subprocess
 SOCAT_SERVER = \
     "socat TCP-LISTEN:{port},reuseaddr,fork UNIX-CONNECT:/tmp/{type}"
 SOCAT_CLIENT = \
-    "socat UNIX-LISTEN:/tmp/{type},fork TCP:{host}:{port}"
+    "socat UNIX-LISTEN:/tmp/{type},fork,unlink-early TCP:{host}:{port}"
 
 TELLDUS_CLIENT = 'TelldusClient'
 TELLDUS_EVENTS = 'TelldusEvents'
