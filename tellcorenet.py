@@ -3,7 +3,9 @@
 more details from https://github.com/pvizeli/tellcore-net
 """
 import shlex
+import socket
 import subprocess
+import time
 
 SOCAT_SERVER = \
     "socat TCP-LISTEN:{port},reuseaddr,fork UNIX-CONNECT:/tmp/{type}"
@@ -32,12 +34,14 @@ class TellCoreClient(object):
                 (TELLDUS_EVENTS, self.port_events)):
             args = shlex.split(SOCAT_CLIENT.format(
                 type=telldus, host=self.host, port=port))
+
             self.proc.append(subprocess.Popen(
                 args,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL
             ))
+        time.sleep(2)
 
     def stop(self):
         """Stop client."""
@@ -64,12 +68,14 @@ class TellCoreServer(object):
                 (TELLDUS_EVENTS, self.port_events)):
             args = shlex.split(SOCAT_SERVER.format(
                 type=telldus, port=port))
+
             self.proc.append(subprocess.Popen(
                 args,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL
             ))
+        time.sleep(2)
 
     def stop(self):
         """Stop server."""
